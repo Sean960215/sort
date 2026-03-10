@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冒泡排序視覺化 - 互動式教學</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+        }
+
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+
+        .input-group input[type="number"],
+        .input-group input[type="text"],
+        .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .slider-with-value {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-with-value input[type="range"] {
+            flex: 1;
+        }
+
+        .slider-value {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            min-width: 55px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            min-width: 90px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            color: white;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+
+        .visualization-panel {
+            grid-column: 1 / -1;
+        }
+
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: #f8f9fa;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .step-info {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+        }
+
+        #stepDisplay {
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.75em;
+            opacity: 0.9;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+
+        .description {
+            background: #fffbea;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            border-radius: 8px;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-buttons button {
+            flex: 0 1 auto;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8em;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .back-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .back-button {
+                position: static;
+                margin: 0 auto 15px;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">
+        <span>←</span>
+        <span>返回首頁</span>
+    </a>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 冒泡排序視覺化</h1>
+            <p>互動式排序算法教學 - 逐步了解冒泡排序的工作原理</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 左侧：數據輸入面板 -->
+            <div class="panel">
+                <h2>📊 數據設置</h2>
+
+                <div class="description">
+                    冒泡排序通過反覆比較相鄰元素並交換來排序數據，時間複雜度為 O(n²)。
+                </div>
+
+                <div class="input-group">
+                    <label>選擇數據數量</label>
+                    <div class="slider-with-value">
+                        <input type="range" id="quantitySlider" min="5" max="100" value="20">
+                        <span class="slider-value"><span id="quantityValue">20</span> 個</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary btn-small" id="generateRandomBtn">🎲 隨機生成</button>
+                    <button class="btn-info btn-small" id="generateSortedBtn">✓ 已排序</button>
+                    <button class="btn-warning btn-small" id="generateReverseBtn">✗ 逆序</button>
+                </div>
+
+                <div class="input-group" style="margin-top: 10px;">
+                    <label>或輸入自訂數據（逗號分隔）</label>
+                    <textarea id="customData" placeholder="例如: 45, 23, 51, 12, 89, 34">45, 23, 51, 12, 89, 34</textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-success" id="loadCustomBtn">📥 加載自訂數據</button>
+                </div>
+
+                <div class="input-group" style="margin-top: 10px;">
+                    <label>播放速度</label>
+                    <div class="slider-with-value">
+                        <input type="range" id="speedSlider" min="1" max="100" value="30">
+                        <span class="slider-value" id="speedDisplay">30</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：控制面板 -->
+            <div class="panel">
+                <h2>⚙️ 排序控制</h2>
+
+                <div class="controls">
+                    <button class="btn-success" id="playBtn">▶ 播放</button>
+                    <button class="btn-warning" id="pauseBtn">⏸ 暫停</button>
+                    <button class="btn-info" id="nextBtn">⏭ 下一步</button>
+                    <button class="btn-primary" id="prevBtn">⏮ 上一步</button>
+                </div>
+
+                <button class="btn-primary" style="width: 100%; margin-bottom: 10px;" id="resetBtn">🔄 重置</button>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-label">比較次數</div>
+                        <div class="stat-value" id="comparisons">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">交換次數</div>
+                        <div class="stat-value" id="swaps">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">輪數</div>
+                        <div class="stat-value" id="rounds">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">狀態</div>
+                        <div class="stat-value" id="status" style="font-size: 1em;">就緒</div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #667eea;"></div>
+                        <span>未排序</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffc107;"></div>
+                        <span>比較</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6b6b;"></div>
+                        <span>交換</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #51cf66;"></div>
+                        <span>已排序</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 可視化窗格 -->
+            <div class="panel visualization-panel">
+                <h2>📈 動畫展示</h2>
+
+                <div class="step-info">
+                    <div id="stepDisplay">準備就緒，請選擇數據並開始排序</div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="canvas" width="900" height="280"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const quantitySlider = document.getElementById('quantitySlider');
+        const quantityValue = document.getElementById('quantityValue');
+        const generateRandomBtn = document.getElementById('generateRandomBtn');
+        const generateSortedBtn = document.getElementById('generateSortedBtn');
+        const generateReverseBtn = document.getElementById('generateReverseBtn');
+        const customDataTextarea = document.getElementById('customData');
+        const loadCustomBtn = document.getElementById('loadCustomBtn');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedDisplay = document.getElementById('speedDisplay');
+        const comparisonsDisplay = document.getElementById('comparisons');
+        const swapsDisplay = document.getElementById('swaps');
+        const roundsDisplay = document.getElementById('rounds');
+        const statusDisplay = document.getElementById('status');
+        const stepDisplay = document.getElementById('stepDisplay');
+
+        let originalArray = [];
+        let array = [];
+        let sorting = false;
+        let playing = false;
+        let comparisons = 0;
+        let swaps = 0;
+        let rounds = 0;
+        let speed = 30;
+        let currentStepIndex = 0;
+        let sortingSteps = [];
+        let highlightedIndices = [];
+        let swappingIndices = [];
+
+        // 初始化數組
+        function initArray() {
+            const quantity = parseInt(quantitySlider.value);
+            originalArray = [];
+            for (let i = 0; i < quantity; i++) {
+                originalArray.push(Math.random() * 1000);
+            }
+            resetSort();
+        }
+
+        // 生成隨機數據
+        function generateRandom() {
+            initArray();
+        }
+
+        // 生成已排序數據
+        function generateSorted() {
+            const quantity = parseInt(quantitySlider.value);
+            originalArray = [];
+            for (let i = 0; i < quantity; i++) {
+                originalArray.push((i + 1) * (1000 / quantity));
+            }
+            resetSort();
+        }
+
+        // 生成逆序數據
+        function generateReverse() {
+            const quantity = parseInt(quantitySlider.value);
+            originalArray = [];
+            for (let i = quantity; i > 0; i--) {
+                originalArray.push(i * (1000 / quantity));
+            }
+            resetSort();
+        }
+
+        // 加載自訂數據
+        function loadCustomData() {
+            const dataStr = customDataTextarea.value.trim();
+            if (!dataStr) {
+                alert('請輸入數據');
+                return;
+            }
+
+            try {
+                originalArray = dataStr.split(',').map(x => {
+                    const num = parseFloat(x.trim());
+                    if (isNaN(num)) throw new Error('無效數據');
+                    return num;
+                });
+
+                if (originalArray.length === 0) {
+                    alert('請輸入至少一個數據');
+                    return;
+                }
+
+                quantitySlider.value = originalArray.length;
+                quantityValue.textContent = originalArray.length;
+                resetSort();
+            } catch (err) {
+                alert('數據格式錯誤：' + err.message);
+            }
+        }
+
+        // 重置排序
+        function resetSort() {
+            array = [...originalArray];
+            comparisons = 0;
+            swaps = 0;
+            rounds = 0;
+            currentStepIndex = 0;
+            sorting = false;
+            playing = false;
+            sortingSteps = [];
+            highlightedIndices = [];
+            swappingIndices = [];
+            comparisonsDisplay.textContent = '0';
+            swapsDisplay.textContent = '0';
+            roundsDisplay.textContent = '0';
+            statusDisplay.textContent = '就緒';
+            stepDisplay.innerHTML = `<strong>準備就緒</strong><br><small>點擊「播放」開始排序，或「下一步」逐步查看</small>`;
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            nextBtn.disabled = false;
+            prevBtn.disabled = true;
+            draw();
+        }
+
+        // 生成所有排序步驟
+        function generateSortingSteps() {
+            const tempArray = [...originalArray];
+            sortingSteps = [
+                {
+                    array: [...tempArray],
+                    comparisons: 0,
+                    swaps: 0,
+                    highlighted: [],
+                    swapping: [],
+                    sorted: [],
+                    roundNumber: 0,
+                    step: '準備開始冒泡排序',
+                    details: `共有 ${tempArray.length} 個元素`
+                }
+            ];
+
+            const n = tempArray.length;
+            let totalComparisons = 0;
+            let totalSwaps = 0;
+            let sortedIndices = []; // 已排序的索引
+
+            for (let i = 0; i < n - 1; i++) {
+                let swapped = false;
+
+                for (let j = 0; j < n - i - 1; j++) {
+                    totalComparisons++;
+
+                    // 比較步驟
+                    sortingSteps.push({
+                        array: [...tempArray],
+                        comparisons: totalComparisons,
+                        swaps: totalSwaps,
+                        highlighted: [j, j + 1],
+                        swapping: [],
+                        sorted: [...sortedIndices],
+                        roundNumber: i + 1,
+                        step: `第 ${i + 1} 輪 - 比較位置 [${j}] 和 [${j + 1}]`,
+                        details: `值: ${tempArray[j].toFixed(1)} 和 ${tempArray[j + 1].toFixed(1)}`
+                    });
+
+                    if (tempArray[j] > tempArray[j + 1]) {
+                        // 交換步驟
+                        [tempArray[j], tempArray[j + 1]] = [tempArray[j + 1], tempArray[j]];
+                        totalSwaps++;
+                        swapped = true;
+
+                        sortingSteps.push({
+                            array: [...tempArray],
+                            comparisons: totalComparisons,
+                            swaps: totalSwaps,
+                            highlighted: [],
+                            swapping: [j, j + 1],
+                            sorted: [...sortedIndices],
+                            roundNumber: i + 1,
+                            step: `第 ${i + 1} 輪 - 交換位置 [${j}] 和 [${j + 1}]`,
+                            details: `已交換順序`
+                        });
+                    }
+                }
+
+                // 一輪結束，最後一個元素已排序
+                sortedIndices.push(n - 1 - i);
+
+                // 一輪結束
+                if (!swapped) {
+                    sortingSteps.push({
+                        array: [...tempArray],
+                        comparisons: totalComparisons,
+                        swaps: totalSwaps,
+                        highlighted: [],
+                        swapping: [],
+                        sorted: Array.from({length: n}, (_, idx) => idx), // 所有已排序
+                        roundNumber: i + 1,
+                        step: `第 ${i + 1} 輪完成 - 無交換發生，排序完成！`,
+                        details: '數列已全部排序'
+                    });
+                    break;
+                } else {
+                    sortingSteps.push({
+                        array: [...tempArray],
+                        comparisons: totalComparisons,
+                        swaps: totalSwaps,
+                        highlighted: [],
+                        swapping: [],
+                        sorted: [...sortedIndices],
+                        roundNumber: i + 1,
+                        step: `第 ${i + 1} 輪完成`,
+                        details: `已確定位置: 最後 ${i + 1} 個元素`
+                    });
+                }
+            }
+
+            // 全部排序完成
+            sortingSteps.push({
+                array: [...tempArray],
+                comparisons: totalComparisons,
+                swaps: totalSwaps,
+                highlighted: [],
+                swapping: [],
+                sorted: Array.from({length: n}, (_, idx) => idx),
+                roundNumber: n - 1,
+                step: '🎉 排序完成！',
+                details: `已比較 ${totalComparisons} 次，交換 ${totalSwaps} 次`
+            });
+        }
+
+        // 繪製數組
+        function draw(highlighted = [], swapping = [], sorted = []) {
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const barWidth = canvas.width / array.length;
+            const maxValue = Math.max(...array);
+
+            for (let i = 0; i < array.length; i++) {
+                const barHeight = (array[i] / maxValue) * (canvas.height - 30);
+                const x = i * barWidth;
+                const y = canvas.height - barHeight - 15;
+
+                // 設定顏色
+                let color = '#667eea'; // 預設藍色
+                if (swapping.includes(i)) {
+                    color = '#ff6b6b'; // 紅色 - 交換
+                } else if (highlighted.includes(i)) {
+                    color = '#ffc107'; // 黃色 - 比較
+                } else if (sorted.includes(i)) {
+                    color = '#51cf66'; // 綠色 - 已排序
+                }
+
+                // 繪製條形
+                ctx.fillStyle = color;
+                ctx.fillRect(x + 2, y, barWidth - 4, barHeight);
+
+                // 繪製邊框
+                ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x + 2, y, barWidth - 4, barHeight);
+            }
+        }
+
+        // 更新當前步驟顯示
+        function updateStep(stepIndex) {
+            if (stepIndex >= 0 && stepIndex < sortingSteps.length) {
+                const step = sortingSteps[stepIndex];
+                array = [...step.array];
+                comparisons = step.comparisons;
+                swaps = step.swaps;
+                rounds = step.roundNumber;
+                comparisonsDisplay.textContent = comparisons;
+                swapsDisplay.textContent = swaps;
+                roundsDisplay.textContent = rounds;
+                statusDisplay.textContent = '教學中';
+
+                let displayText = `<strong>${step.step}</strong>`;
+                if (step.details) {
+                    displayText += `<br><small style="color: #666;">📌 ${step.details}</small>`;
+                }
+                stepDisplay.innerHTML = displayText;
+
+                draw(step.highlighted, step.swapping, step.sorted);
+
+                // 更新按鈕狀態
+                prevBtn.disabled = stepIndex === 0;
+                nextBtn.disabled = stepIndex === sortingSteps.length - 1;
+            }
+        }
+
+        // 延遲函數
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // 自動播放
+        async function autoPlay() {
+            playing = true;
+            playBtn.disabled = true;
+            pauseBtn.disabled = false;
+            nextBtn.disabled = true;
+            prevBtn.disabled = true;
+
+            while (currentStepIndex < sortingSteps.length - 1 && playing) {
+                currentStepIndex++;
+                updateStep(currentStepIndex);
+                // 速度公式：最慢2秒，最快0.1秒
+                await sleep(2100 - speed * 20);
+            }
+
+            if (currentStepIndex === sortingSteps.length - 1) {
+                statusDisplay.textContent = '完成！';
+            }
+            playing = false;
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            nextBtn.disabled = false;
+        }
+
+        // 事件監聽
+        quantitySlider.addEventListener('input', (e) => {
+            quantityValue.textContent = e.target.value;
+        });
+
+        generateRandomBtn.addEventListener('click', generateRandom);
+        generateSortedBtn.addEventListener('click', generateSorted);
+        generateReverseBtn.addEventListener('click', generateReverse);
+        loadCustomBtn.addEventListener('click', loadCustomData);
+
+        playBtn.addEventListener('click', () => {
+            if (!sorting) {
+                sorting = true;
+                if (sortingSteps.length === 0) {
+                    generateSortingSteps();
+                }
+                autoPlay();
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            playing = false;
+            pauseBtn.disabled = true;
+            playBtn.disabled = false;
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (!sorting) {
+                if (sortingSteps.length === 0) {
+                    generateSortingSteps();
+                }
+                if (currentStepIndex < sortingSteps.length - 1) {
+                    currentStepIndex++;
+                    updateStep(currentStepIndex);
+                }
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (!sorting && currentStepIndex > 0) {
+                currentStepIndex--;
+                updateStep(currentStepIndex);
+            }
+        });
+
+        resetBtn.addEventListener('click', resetSort);
+
+        speedSlider.addEventListener('input', (e) => {
+            speed = parseInt(e.target.value);
+            speedDisplay.textContent = speed;
+        });
+
+        // 初始化
+        initArray();
+    </script>
+</body>
+</html>
