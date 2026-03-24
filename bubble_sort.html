@@ -391,6 +391,7 @@
                 <div class="controls">
                     <button class="btn-success" id="playBtn">▶ 播放</button>
                     <button class="btn-warning" id="pauseBtn">⏸ 暫停</button>
+                    <button class="btn-info" id="stepBtn">👣 單步執行</button>
                     <button class="btn-info" id="nextBtn">⏭ 下一步</button>
                     <button class="btn-primary" id="prevBtn">⏮ 上一步</button>
                 </div>
@@ -456,6 +457,7 @@
         const ctx = canvas.getContext('2d');
         const playBtn = document.getElementById('playBtn');
         const pauseBtn = document.getElementById('pauseBtn');
+        const stepBtn = document.getElementById('stepBtn');
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -566,12 +568,37 @@
             swapsDisplay.textContent = '0';
             roundsDisplay.textContent = '0';
             statusDisplay.textContent = '就緒';
-            stepDisplay.innerHTML = `<strong>準備就緒</strong><br><small>點擊「播放」開始排序，或「下一步」逐步查看</small>`;
+            stepDisplay.innerHTML = `<strong>準備就緒</strong><br><small>點擊「播放」自動排序，或「單步執行」逐步查看</small>`;
             playBtn.disabled = false;
             pauseBtn.disabled = true;
+            stepBtn.disabled = false;
             nextBtn.disabled = false;
             prevBtn.disabled = true;
             draw();
+        }
+
+        function ensureSortingSteps() {
+            if (sortingSteps.length === 0) {
+                generateSortingSteps();
+                sorting = true;
+            }
+        }
+
+        function stepForward() {
+            if (playing) {
+                return;
+            }
+
+            ensureSortingSteps();
+
+            if (currentStepIndex < sortingSteps.length - 1) {
+                currentStepIndex++;
+                updateStep(currentStepIndex);
+            }
+
+            if (currentStepIndex === sortingSteps.length - 1) {
+                statusDisplay.textContent = '完成！';
+            }
         }
 
         // 生成所有排序步驟
@@ -739,6 +766,7 @@
                 // 更新按鈕狀態
                 prevBtn.disabled = stepIndex === 0;
                 nextBtn.disabled = stepIndex === sortingSteps.length - 1;
+                stepBtn.disabled = stepIndex === sortingSteps.length - 1;
             }
         }
 
@@ -752,6 +780,7 @@
             playing = true;
             playBtn.disabled = true;
             pauseBtn.disabled = false;
+            stepBtn.disabled = true;
             nextBtn.disabled = true;
             prevBtn.disabled = true;
 
@@ -768,7 +797,9 @@
             playing = false;
             playBtn.disabled = false;
             pauseBtn.disabled = true;
-            nextBtn.disabled = false;
+            prevBtn.disabled = currentStepIndex === 0;
+            nextBtn.disabled = currentStepIndex === sortingSteps.length - 1;
+            stepBtn.disabled = currentStepIndex === sortingSteps.length - 1;
         }
 
         // 事件監聽
@@ -782,11 +813,8 @@
         loadCustomBtn.addEventListener('click', loadCustomData);
 
         playBtn.addEventListener('click', () => {
-            if (!sorting) {
-                sorting = true;
-                if (sortingSteps.length === 0) {
-                    generateSortingSteps();
-                }
+            if (!playing) {
+                ensureSortingSteps();
                 autoPlay();
             }
         });
@@ -795,22 +823,21 @@
             playing = false;
             pauseBtn.disabled = true;
             playBtn.disabled = false;
+            prevBtn.disabled = currentStepIndex === 0;
+            nextBtn.disabled = currentStepIndex === sortingSteps.length - 1;
+            stepBtn.disabled = currentStepIndex === sortingSteps.length - 1;
+        });
+
+        stepBtn.addEventListener('click', () => {
+            stepForward();
         });
 
         nextBtn.addEventListener('click', () => {
-            if (!sorting) {
-                if (sortingSteps.length === 0) {
-                    generateSortingSteps();
-                }
-                if (currentStepIndex < sortingSteps.length - 1) {
-                    currentStepIndex++;
-                    updateStep(currentStepIndex);
-                }
-            }
+            stepForward();
         });
 
         prevBtn.addEventListener('click', () => {
-            if (!sorting && currentStepIndex > 0) {
+            if (!playing && currentStepIndex > 0) {
                 currentStepIndex--;
                 updateStep(currentStepIndex);
             }
