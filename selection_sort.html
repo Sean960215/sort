@@ -13,7 +13,7 @@
 
 		body {
 			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: #F6F4F1;
 			min-height: 100vh;
 			padding: 10px;
 		}
@@ -25,19 +25,20 @@
 
 		.header {
 			text-align: center;
-			color: white;
+			color: #4A4543;
 			margin-bottom: 12px;
 		}
 
 		.header h1 {
 			font-size: 1.8em;
 			margin-bottom: 5px;
-			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+			text-shadow: none;
 		}
 
 		.header p {
 			font-size: 0.95em;
-			opacity: 0.9;
+			opacity: 0.8;
+			color: #7A7470;
 		}
 
 		.main-content {
@@ -48,17 +49,18 @@
 		}
 
 		.panel {
-			background: white;
+			background: #FDFAF7;
 			border-radius: 12px;
-			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 			padding: 15px;
+			border: 1px solid #F0EBE5;
 		}
 
 		.panel h2 {
-			color: #667eea;
+			color: #4A4543;
 			margin-bottom: 12px;
 			font-size: 1.1em;
-			border-bottom: 2px solid #667eea;
+			border-bottom: 1px solid #E8E2DB;
 			padding-bottom: 8px;
 		}
 
@@ -88,8 +90,8 @@
 
 		.input-group input:focus,
 		.input-group textarea:focus {
-			outline: none;
-			border-color: #667eea;
+			border-color: #9B8B7B;
+			box-shadow: 0 0 0 3px rgba(155, 139, 123, 0.1);
 			box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 		}
 
@@ -109,8 +111,8 @@
 		}
 
 		.slider-value {
-			background: #667eea;
-			color: white;
+			background: #9B8B7B;
+			color: #FEFAF7;
 			padding: 6px 12px;
 			border-radius: 6px;
 			font-weight: bold;
@@ -136,7 +138,7 @@
 			cursor: pointer;
 			transition: all 0.3s ease;
 			font-size: 0.85em;
-			color: white;
+			color: #FEFAF7;
 		}
 
 		button:hover:not(:disabled) {
@@ -150,19 +152,19 @@
 		}
 
 		.btn-primary {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: #9B8B7B;
 		}
 
 		.btn-success {
-			background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+			background: #8B9B7B;
 		}
 
 		.btn-warning {
-			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+			background: #A59B8B;
 		}
 
 		.btn-info {
-			background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+			background: #9B8B7B;
 		}
 
 		.btn-small {
@@ -181,16 +183,16 @@
 		}
 
 		canvas {
-			border: 2px solid #667eea;
+			border: 1px solid #E8E2DB;
 			border-radius: 8px;
-			background: #f8f9fa;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			background: #FEFEF8;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 			max-width: 100%;
 		}
 
 		.info-box {
-			background: #f0f4ff;
-			border-left: 4px solid #667eea;
+			background: #F5F1ED;
+			border-left: 3px solid #9B8B7B;
 			padding: 10px;
 			border-radius: 8px;
 			margin-bottom: 10px;
@@ -226,7 +228,7 @@
 		}
 
 		.stat-item {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: #6B7A94;
 			padding: 12px;
 			border-radius: 8px;
 			text-align: center;
