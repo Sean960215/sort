@@ -459,6 +459,10 @@
             line-height: 1.6;
         }
 
+        .inline-step-record {
+            margin-top: 12px;
+        }
+
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -600,6 +604,14 @@
                 <div class="canvas-container">
                     <canvas id="canvas" width="900" height="280"></canvas>
                 </div>
+
+                <div class="inline-step-record">
+                    <div class="step-track">
+                        <div class="step-track-title">目前教學步驟</div>
+                        <div id="learningCurrentStep" class="step-track-current">尚未開始，請點擊播放或單步執行。</div>
+                        <div id="learningStepHint" class="step-track-hint">提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -678,14 +690,6 @@ function merge(left, right):
                 </table>
             </section>
 
-            <section class="learning-card span-2">
-                <h2>五、步驟記錄</h2>
-                <div class="step-track">
-                    <div class="step-track-title">目前教學步驟</div>
-                    <div id="learningCurrentStep" class="step-track-current">尚未開始，請點擊播放或單步執行。</div>
-                    <div id="learningStepHint" class="step-track-hint">提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。</div>
-                </div>
-            </section>
         </div>
     </div>
 
