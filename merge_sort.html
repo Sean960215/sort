@@ -318,6 +318,147 @@
             box-shadow: 0 4px 10px rgba(155, 139, 123, 0.15);
         }
 
+        .learning-sections {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: start;
+        }
+
+        .learning-card {
+            background: #FDFAF7;
+            border: 1px solid #E8E2DB;
+            border-radius: 18px;
+            padding: 18px;
+            color: #4A4543;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .learning-card h2 {
+            color: #4A4543;
+            font-size: 1.25em;
+            margin-bottom: 12px;
+            border-left: 6px solid #9B8B7B;
+            padding-left: 12px;
+        }
+
+        .learning-card p {
+            line-height: 1.7;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .span-2 {
+            grid-column: 1 / -1;
+        }
+
+        .keypoints-list {
+            margin: 0;
+            padding-left: 20px;
+            color: #5F5854;
+            line-height: 1.8;
+        }
+
+        .keypoints-list li {
+            margin-bottom: 6px;
+        }
+
+        .highlight-text {
+            color: #9B8B7B;
+            font-weight: 700;
+        }
+
+        .pseudo-code {
+            margin-top: 12px;
+            background: #F5F1ED;
+            border-radius: 14px;
+            border: 1px solid #E8E2DB;
+            padding: 14px;
+            color: #3F3A37;
+            overflow-x: auto;
+        }
+
+        .pseudo-code pre {
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .complexity-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid #E8E2DB;
+            font-size: 0.95em;
+        }
+
+        .complexity-table th,
+        .complexity-table td {
+            border: 1px solid #E8E2DB;
+            padding: 14px 12px;
+            text-align: center;
+        }
+
+        .complexity-table th {
+            background: #F5F1ED;
+            color: #4A4543;
+            font-size: 1.05em;
+        }
+
+        .complexity-table td {
+            background: #FFFCFA;
+        }
+
+        .complexity-good {
+            color: #2E8B57;
+            font-weight: 700;
+        }
+
+        .complexity-warn {
+            color: #B8860B;
+            font-weight: 700;
+        }
+
+        .complexity-bad {
+            color: #C75C5C;
+            font-weight: 700;
+        }
+
+        .complexity-info {
+            color: #6B7A94;
+            font-weight: 700;
+        }
+
+        .step-track {
+            background: #F5F1ED;
+            border: 1px solid #E8E2DB;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .step-track-title {
+            color: #7A7470;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .step-track-current {
+            color: #4A4543;
+            font-size: 1.05em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .step-track-hint {
+            color: #6F6965;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -331,6 +472,14 @@
                 position: static;
                 margin: 0 auto 15px;
                 width: fit-content;
+            }
+
+            .learning-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .span-2 {
+                grid-column: auto;
             }
         }
     </style>
@@ -453,6 +602,91 @@
                 </div>
             </div>
         </div>
+
+        <div class="learning-sections">
+            <section class="learning-card">
+                <h2>一、操作原理</h2>
+                <p>合併排序法（Merge Sort）採用分治（Divide and Conquer）策略。</p>
+                <p>核心概念：<span class="highlight-text">先遞迴切分，再將兩個已排序子陣列線性合併</span>，每層合併總成本為 O(n)。</p>
+                <p>總共有約 log n 層遞迴，因此時間複雜度穩定在 O(n log n)。</p>
+            </section>
+
+            <section class="learning-card">
+                <h2>二、演算法偽代碼</h2>
+                <div class="pseudo-code">
+<pre>function mergeSort(arr):
+  if arr.length <= 1: return arr
+  mid = floor(arr.length / 2)
+  left = mergeSort(arr[0..mid-1])
+  right = mergeSort(arr[mid..end])
+  return merge(left, right)
+
+function merge(left, right):
+  result = []
+  while left and right 都有元素:
+    取較小者放入 result
+  將剩餘元素接到 result 後面</pre>
+                </div>
+            </section>
+
+            <section class="learning-card">
+                <h2>三、重點整理</h2>
+                <ul class="keypoints-list">
+                    <li>先切分到子問題最小，再一路回推合併。</li>
+                    <li>時間複雜度穩定為 O(n log n)，不受資料分布影響。</li>
+                    <li>需要額外暫存空間，因此不是 O(1) 空間排序。</li>
+                </ul>
+            </section>
+
+            <section class="learning-card span-2">
+                <h2>四、時間 & 空間複雜度</h2>
+                <table class="complexity-table">
+                    <thead>
+                        <tr>
+                            <th>情況</th>
+                            <th>時間複雜度</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>最佳情況 (Best)</td>
+                            <td class="complexity-good">O(n log n)</td>
+                            <td>無論資料分布，仍需完整分割與合併</td>
+                        </tr>
+                        <tr>
+                            <td>平均情況 (Average)</td>
+                            <td class="complexity-good">O(n log n)</td>
+                            <td>時間表現穩定</td>
+                        </tr>
+                        <tr>
+                            <td>最壞情況 (Worst)</td>
+                            <td class="complexity-good">O(n log n)</td>
+                            <td>最壞情況仍維持同級</td>
+                        </tr>
+                        <tr>
+                            <td>空間複雜度</td>
+                            <td class="complexity-warn">O(n)</td>
+                            <td>需要額外陣列進行合併</td>
+                        </tr>
+                        <tr>
+                            <td>穩定性</td>
+                            <td class="complexity-good">穩定</td>
+                            <td>相等元素可維持原始順序</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="learning-card span-2">
+                <h2>五、步驟記錄</h2>
+                <div class="step-track">
+                    <div class="step-track-title">目前教學步驟</div>
+                    <div id="learningCurrentStep" class="step-track-current">尚未開始，請點擊播放或單步執行。</div>
+                    <div id="learningStepHint" class="step-track-hint">提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。</div>
+                </div>
+            </section>
+        </div>
     </div>
 
     <script>
@@ -478,6 +712,8 @@
         const depthDisplay = document.getElementById('depth');
         const statusDisplay = document.getElementById('status');
         const stepDisplay = document.getElementById('stepDisplay');
+        const learningCurrentStep = document.getElementById('learningCurrentStep');
+        const learningStepHint = document.getElementById('learningStepHint');
 
         let originalArray = [];
         let array = [];
@@ -572,12 +808,28 @@
             depthDisplay.textContent = '0';
             statusDisplay.textContent = '就緒';
             stepDisplay.innerHTML = `<strong>準備就緒</strong><br><small>點擊「播放」自動排序，或「單步執行」逐步查看</small>`;
+            if (learningCurrentStep) {
+                learningCurrentStep.textContent = '尚未開始，請點擊播放或單步執行。';
+            }
+            if (learningStepHint) {
+                learningStepHint.textContent = '提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。';
+            }
             playBtn.disabled = false;
             pauseBtn.disabled = true;
             stepBtn.disabled = false;
             nextBtn.disabled = false;
             prevBtn.disabled = true;
             draw();
+        }
+
+        function updateLearningStep(step) {
+            if (!learningCurrentStep || !learningStepHint || !step) {
+                return;
+            }
+            learningCurrentStep.textContent = step.step || '進行中';
+            learningStepHint.textContent = step.details
+                ? `提示：${step.details}`
+                : '提示：請觀察區間分割與合併範圍。';
         }
 
         function ensureSortingSteps() {
@@ -806,6 +1058,7 @@
                     displayText += `<br><small style="color: #666;">📌 ${step.details}</small>`;
                 }
                 stepDisplay.innerHTML = displayText;
+                updateLearningStep(step);
 
                 draw(step.highlighted, step.merging, step.sorted);
 

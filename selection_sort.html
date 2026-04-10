@@ -317,6 +317,147 @@
 			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 		}
 
+		.learning-sections {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+			margin-bottom: 12px;
+			align-items: start;
+		}
+
+		.learning-card {
+			background: #FDFAF7;
+			border: 1px solid #E8E2DB;
+			border-radius: 18px;
+			padding: 18px;
+			color: #4A4543;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+		}
+
+		.learning-card h2 {
+			color: #4A4543;
+			font-size: 1.25em;
+			margin-bottom: 12px;
+			border-left: 6px solid #9B8B7B;
+			padding-left: 12px;
+		}
+
+		.learning-card p {
+			line-height: 1.7;
+			font-size: 1em;
+			margin-bottom: 10px;
+		}
+
+		.span-2 {
+			grid-column: 1 / -1;
+		}
+
+		.keypoints-list {
+			margin: 0;
+			padding-left: 20px;
+			color: #5F5854;
+			line-height: 1.8;
+		}
+
+		.keypoints-list li {
+			margin-bottom: 6px;
+		}
+
+		.highlight-text {
+			color: #9B8B7B;
+			font-weight: 700;
+		}
+
+		.pseudo-code {
+			margin-top: 12px;
+			background: #F5F1ED;
+			border-radius: 14px;
+			border: 1px solid #E8E2DB;
+			padding: 14px;
+			color: #3F3A37;
+			overflow-x: auto;
+		}
+
+		.pseudo-code pre {
+			font-size: 0.95em;
+			line-height: 1.6;
+			margin: 0;
+			white-space: pre;
+		}
+
+		.complexity-table {
+			width: 100%;
+			border-collapse: collapse;
+			overflow: hidden;
+			border-radius: 12px;
+			border: 1px solid #E8E2DB;
+			font-size: 0.95em;
+		}
+
+		.complexity-table th,
+		.complexity-table td {
+			border: 1px solid #E8E2DB;
+			padding: 14px 12px;
+			text-align: center;
+		}
+
+		.complexity-table th {
+			background: #F5F1ED;
+			color: #4A4543;
+			font-size: 1.05em;
+		}
+
+		.complexity-table td {
+			background: #FFFCFA;
+		}
+
+		.complexity-good {
+			color: #2E8B57;
+			font-weight: 700;
+		}
+
+		.complexity-warn {
+			color: #B8860B;
+			font-weight: 700;
+		}
+
+		.complexity-bad {
+			color: #C75C5C;
+			font-weight: 700;
+		}
+
+		.complexity-info {
+			color: #6B7A94;
+			font-weight: 700;
+		}
+
+		.step-track {
+			background: #F5F1ED;
+			border: 1px solid #E8E2DB;
+			border-radius: 12px;
+			padding: 12px;
+		}
+
+		.step-track-title {
+			color: #7A7470;
+			font-size: 0.9em;
+			margin-bottom: 10px;
+			opacity: 0.95;
+		}
+
+		.step-track-current {
+			color: #4A4543;
+			font-size: 1.05em;
+			margin-bottom: 8px;
+			font-weight: 700;
+		}
+
+		.step-track-hint {
+			color: #6F6965;
+			font-size: 0.95em;
+			line-height: 1.6;
+		}
+
 		@media (max-width: 1024px) {
 			.main-content {
 				grid-template-columns: 1fr;
@@ -330,6 +471,14 @@
 				position: static;
 				margin: 0 auto 15px;
 				width: fit-content;
+			}
+
+			.learning-sections {
+				grid-template-columns: 1fr;
+			}
+
+			.span-2 {
+				grid-column: auto;
 			}
 		}
 	</style>
@@ -449,6 +598,88 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="learning-sections">
+			<section class="learning-card">
+				<h2>一、操作原理</h2>
+				<p>選擇排序法（Selection Sort）每輪都會從未排序區間找出最小值。</p>
+				<p>核心概念：<span class="highlight-text">先掃描找最小元素，再與當前起點位置交換</span>，如此逐步擴大左側已排序區間。</p>
+				<p>它的比較次數幾乎固定，不受資料是否接近有序影響，但交換次數相對較少。</p>
+			</section>
+
+			<section class="learning-card">
+				<h2>二、演算法偽代碼</h2>
+				<div class="pseudo-code">
+<pre>function selectionSort(arr):
+  n = arr.length
+  for i = 0 to n-2:
+    minIndex = i
+    for j = i+1 to n-1:
+      if arr[j] < arr[minIndex]:
+        minIndex = j
+    if minIndex != i:
+      swap(arr[i], arr[minIndex])</pre>
+				</div>
+			</section>
+
+			<section class="learning-card">
+				<h2>三、重點整理</h2>
+				<ul class="keypoints-list">
+					<li>每輪固定找出未排序區間的最小值再交換。</li>
+					<li>比較次數幾乎固定，資料分布對時間影響小。</li>
+					<li>交換次數較少，但演算法本身不穩定。</li>
+				</ul>
+			</section>
+
+			<section class="learning-card span-2">
+				<h2>四、時間 & 空間複雜度</h2>
+				<table class="complexity-table">
+					<thead>
+						<tr>
+							<th>情況</th>
+							<th>時間複雜度</th>
+							<th>說明</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>最佳情況 (Best)</td>
+							<td class="complexity-warn">O(n^2)</td>
+							<td>仍需完整掃描尋找最小值</td>
+						</tr>
+						<tr>
+							<td>平均情況 (Average)</td>
+							<td class="complexity-warn">O(n^2)</td>
+							<td>比較次數固定級別</td>
+						</tr>
+						<tr>
+							<td>最壞情況 (Worst)</td>
+							<td class="complexity-bad">O(n^2)</td>
+							<td>同樣需要完整比較</td>
+						</tr>
+						<tr>
+							<td>空間複雜度</td>
+							<td class="complexity-info">O(1)</td>
+							<td>原地排序，只需常數額外空間</td>
+						</tr>
+						<tr>
+							<td>穩定性</td>
+							<td class="complexity-bad">不穩定</td>
+							<td>交換可能改變相等元素原始順序</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section class="learning-card span-2">
+				<h2>五、步驟記錄</h2>
+				<div class="step-track">
+					<div class="step-track-title">目前教學步驟</div>
+					<div id="learningCurrentStep" class="step-track-current">尚未開始，請點擊播放或單步執行。</div>
+					<div id="learningStepHint" class="step-track-hint">提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。</div>
+				</div>
+			</section>
+		</div>
 	</div>
 
 	<script>
@@ -474,6 +705,8 @@
 		const roundsDisplay = document.getElementById('rounds');
 		const statusDisplay = document.getElementById('status');
 		const stepDisplay = document.getElementById('stepDisplay');
+		const learningCurrentStep = document.getElementById('learningCurrentStep');
+		const learningStepHint = document.getElementById('learningStepHint');
 
 		let originalArray = [];
 		let array = [];
@@ -558,12 +791,28 @@
 			roundsDisplay.textContent = '0';
 			statusDisplay.textContent = '就緒';
 			stepDisplay.innerHTML = '<strong>準備就緒</strong><br><small>點擊「播放」自動排序，或「單步執行」逐步查看</small>';
+			if (learningCurrentStep) {
+				learningCurrentStep.textContent = '尚未開始，請點擊播放或單步執行。';
+			}
+			if (learningStepHint) {
+				learningStepHint.textContent = '提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。';
+			}
 			playBtn.disabled = false;
 			pauseBtn.disabled = true;
 			stepBtn.disabled = false;
 			nextBtn.disabled = false;
 			prevBtn.disabled = true;
 			draw();
+		}
+
+		function updateLearningStep(step) {
+			if (!learningCurrentStep || !learningStepHint || !step) {
+				return;
+			}
+			learningCurrentStep.textContent = step.step || '進行中';
+			learningStepHint.textContent = step.details
+				? `提示：${step.details}`
+				: '提示：請觀察最小值搜尋與交換位置。';
 		}
 
 		function ensureSortingSteps() {
@@ -766,6 +1015,7 @@
 					displayText += `<br><small style="color: #666;">📌 ${step.details}</small>`;
 				}
 				stepDisplay.innerHTML = displayText;
+				updateLearningStep(step);
 
 				draw(step.highlighted, step.swapping, step.sorted);
 
