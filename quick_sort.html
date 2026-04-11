@@ -453,6 +453,60 @@
             margin-top: 12px;
         }
 
+        .record-panel {
+            margin-top: 14px;
+            background: #0C1B38;
+            border: 1px solid #1A315E;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .record-title {
+            color: #2EC6FF;
+            font-size: 1.08em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .record-log {
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .record-line {
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #D4E6FF;
+            font-size: 0.92em;
+            line-height: 1.6;
+            border-bottom: 1px dashed rgba(136, 168, 220, 0.16);
+            padding: 4px 0;
+            white-space: pre-wrap;
+        }
+
+        .record-line.compare {
+            color: #C8DCFF;
+        }
+
+        .record-line.swap {
+            color: #FF8A8A;
+        }
+
+        .record-line.round {
+            color: #9FA9FF;
+            font-weight: 700;
+        }
+
+        .record-line.done {
+            color: #52E0A0;
+            font-weight: 700;
+        }
+
+        .record-line.empty {
+            color: #8FA4C8;
+            border-bottom: none;
+        }
+
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -601,6 +655,13 @@
                         <div id="learningCurrentStep" class="step-track-current">尚未開始，請點擊播放或單步執行。</div>
                         <div id="learningStepHint" class="step-track-hint">提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。</div>
                     </div>
+
+                    <div class="record-panel">
+                        <div class="record-title">五、步驟記錄</div>
+                        <div id="stepRecordLog" class="record-log">
+                            <div class="record-line empty">尚未開始，請點擊「播放」或「單步執行」。</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -708,6 +769,7 @@
         const stepDisplay = document.getElementById('stepDisplay');
         const learningCurrentStep = document.getElementById('learningCurrentStep');
         const learningStepHint = document.getElementById('learningStepHint');
+        const stepRecordLog = document.getElementById('stepRecordLog');
 
         let originalArray = [];
         let array = [];
@@ -804,12 +866,65 @@
             if (learningStepHint) {
                 learningStepHint.textContent = '提示會在排序過程中同步更新，幫助你觀察每一步在做什麼。';
             }
+            renderStepRecord(0);
             playBtn.disabled = false;
             pauseBtn.disabled = true;
             stepBtn.disabled = false;
             nextBtn.disabled = false;
             prevBtn.disabled = true;
             draw();
+        }
+
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getRecordClass(stepText) {
+            if (!stepText) return 'compare';
+            if (stepText.includes('完成')) return 'done';
+            if (stepText.includes('比較') || stepText.includes('掃描')) return 'compare';
+            if (
+                stepText.includes('交換') ||
+                stepText.includes('移動') ||
+                stepText.includes('合併') ||
+                stepText.includes('插入') ||
+                stepText.includes('樞紐') ||
+                stepText.includes('分割')
+            ) {
+                return 'swap';
+            }
+            if (stepText.includes('第') && stepText.includes('輪')) return 'round';
+            return 'compare';
+        }
+
+        function renderStepRecord(stepIndex) {
+            if (!stepRecordLog || sortingSteps.length === 0 || stepIndex <= 0) {
+                if (stepRecordLog) {
+                    stepRecordLog.innerHTML = '<div class="record-line empty">尚未開始，請點擊「播放」或「單步執行」。</div>';
+                }
+                return;
+            }
+
+            const lines = [];
+            for (let i = 1; i <= stepIndex; i++) {
+                const step = sortingSteps[i];
+                if (!step) continue;
+                const text = step.details ? `${step.step} | ${step.details}` : step.step;
+                lines.push(`<div class="record-line ${getRecordClass(step.step)}">${escapeHtml(text)}</div>`);
+            }
+
+            if (lines.length === 0) {
+                stepRecordLog.innerHTML = '<div class="record-line empty">尚未開始，請點擊「播放」或「單步執行」。</div>';
+                return;
+            }
+
+            stepRecordLog.innerHTML = lines.join('');
+            stepRecordLog.scrollTop = stepRecordLog.scrollHeight;
         }
 
         function updateLearningStep(step) {
@@ -1041,6 +1156,7 @@
                 }
                 stepDisplay.innerHTML = displayText;
                 updateLearningStep(step);
+                renderStepRecord(stepIndex);
 
                 draw(step.highlighted, step.pivots, step.sorted);
 
